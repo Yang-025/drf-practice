@@ -1,4 +1,8 @@
-from rest_framework.serializers import ModelSerializer, HyperlinkedIdentityField
+from rest_framework.serializers import (
+    HyperlinkedIdentityField,
+    ModelSerializer,
+    SerializerMethodField,
+)
 
 from posts.models import Post
 
@@ -36,7 +40,6 @@ class PostDetailSerializer(ModelSerializer):
 
 
 class PostListSerializer(ModelSerializer):
-    url = post_detail_url
     # view_name 來自於blog/urls.py 的 namespace='posts-api'
     # 再加上 posts/urls.py 的 name='detail'
     # url = HyperlinkedIdentityField(
@@ -47,6 +50,10 @@ class PostListSerializer(ModelSerializer):
     #     view_name='posts-api:delete',
     #     lookup_field='slug'
     # )
+    url = post_detail_url
+    user = SerializerMethodField()
+    image = SerializerMethodField()
+    html = SerializerMethodField()
 
     class Meta:
         model = Post
@@ -56,9 +63,23 @@ class PostListSerializer(ModelSerializer):
             'title',
             'content',
             'publish',
+            'image',
+            'html',
             # 'delete_url',
         ]
 
+    def get_html(self, obj):
+        return obj.get_markdown()
+
+    def get_user(self, obj):
+        return str(obj.user.username)
+
+    def get_image(self, obj):
+        try:
+            image = obj.image.url
+        except:
+            image = None
+        return image
 
 
 
