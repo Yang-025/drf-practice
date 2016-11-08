@@ -4,6 +4,9 @@ from rest_framework.serializers import (
     SerializerMethodField,
 )
 
+from comments.api.serializers import CommentSerializer
+from comments.models import Comment
+
 from posts.models import Post
 
 
@@ -26,6 +29,7 @@ post_detail_url = HyperlinkedIdentityField(
 
 class PostDetailSerializer(ModelSerializer):
     url = post_detail_url
+    comments = SerializerMethodField()
 
     class Meta:
         model = Post
@@ -36,8 +40,15 @@ class PostDetailSerializer(ModelSerializer):
             'slug',
             'content',
             'publish',
+            'comments',
         ]
 
+    def get_comments(self, obj):
+        # content_type = obj.get_content_type
+        # object_id = obj.id
+        c_qs = Comment.objects.filter_by_instance(obj)
+        comments = CommentSerializer(c_qs, many=True).data
+        return comments
 
 class PostListSerializer(ModelSerializer):
     # view_name 來自於blog/urls.py 的 namespace='posts-api'
