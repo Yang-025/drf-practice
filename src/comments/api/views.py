@@ -27,13 +27,15 @@ from posts.api.pagination import PostLimitOffsetPagination, PostPageNumberPagina
 from posts.api.permissions import IsOwnerOrReadOnly
 
 from .serializers import (
-    CommentSerializer
+    CommentSerializer,
+    CommentDetailSerializer,
 )
 
 
 class CommentDetailAPIView(RetrieveAPIView):
     queryset = Comment.objects.all()
-    serializer_class = CommentSerializer
+    serializer_class = CommentDetailSerializer
+    lookup_field = 'id'
 
 
 class CommentListAPIView(ListAPIView):
