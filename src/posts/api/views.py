@@ -14,6 +14,8 @@ from rest_framework.generics import (
     RetrieveUpdateAPIView,
 )
 
+
+
 from rest_framework.permissions import (
     AllowAny,
     IsAuthenticated,
@@ -66,6 +68,8 @@ class PostListAPIView(ListAPIView):
     serializer_class = PostListSerializer
     filter_backends = [SearchFilter, OrderingFilter]
     search_fields = ['title', 'content', 'user__first_name']
+    # pagination_class = PageNumberPagination
+    pagination_class = LimitOffsetPagination
 
     def get_queryset(self, *args, **kwargs):
         # queryset_list = super(PostListAPIView, self).get_queryset(*args,**kwargs)
