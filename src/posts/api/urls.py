@@ -3,7 +3,10 @@ from django.contrib import admin
 
 from .views import (
 	PostDetailAPIView,
-    PostListAPIView
+    PostListAPIView,
+	PostUpdateAPIView,
+	PostDeleteAPIView
+
 	)
 
 urlpatterns = [
@@ -11,8 +14,7 @@ urlpatterns = [
     # url(r'^create/$', post_create),
     # pk:primary key \d+ : digit regex
     # url(r'^(?P<pk>\d+)/$', PostDetailAPIView.as_view(), name='detail'),
-    url(r'^(?P<abc>[\w-]+)/$', PostDetailAPIView.as_view(), name='detail'),
-    # url(r'^(?P<slug>[\w-]+)/edit/$', post_update, name='update'),
-    # url(r'^(?P<slug>[\w-]+)/delete/$', post_delete),
-    # #url(r'^posts/$', "<appname>.views.<function_name>"),
+    url(r'^(?P<slug>[\w-]+)/$', PostDetailAPIView.as_view(), name='detail'),
+    url(r'^(?P<slug>[\w-]+)/edit/$', PostUpdateAPIView.as_view(), name='update'),
+    url(r'^(?P<slug>[\w-]+)/delete/$', PostDeleteAPIView.as_view(), name='delete'),
 ]
