@@ -2,16 +2,16 @@ from django.conf.urls import url
 from django.contrib import admin
 
 from .views import (
-	PostDetailAPIView,
+    PostCreateAPIView,
+    PostDetailAPIView,
     PostListAPIView,
-	PostUpdateAPIView,
-	PostDeleteAPIView
-
-	)
+    PostUpdateAPIView,
+    PostDeleteAPIView
+)
 
 urlpatterns = [
-	url(r'^$', PostListAPIView.as_view(), name='list'),
-    # url(r'^create/$', post_create),
+    url(r'^$', PostListAPIView.as_view(), name='list'),
+    url(r'^create/$', PostCreateAPIView.as_view(), name='create'),
     # pk:primary key \d+ : digit regex
     # url(r'^(?P<pk>\d+)/$', PostDetailAPIView.as_view(), name='detail'),
     url(r'^(?P<slug>[\w-]+)/$', PostDetailAPIView.as_view(), name='detail'),

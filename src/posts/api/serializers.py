@@ -2,16 +2,17 @@ from rest_framework.serializers import ModelSerializer
 
 from posts.models import Post
 
-class PostListSerializer(ModelSerializer):
+
+class PostCreateUpdateSerializer(ModelSerializer):
     class Meta:
         model = Post
         fields = [
+            # 'id',
             'title',
-            'slug',
+            # 'slug',
             'content',
             'publish',
         ]
-
 
 class PostDetailSerializer(ModelSerializer):
     class Meta:
@@ -23,6 +24,19 @@ class PostDetailSerializer(ModelSerializer):
             'content',
             'publish',
         ]
+
+class PostListSerializer(ModelSerializer):
+    class Meta:
+        model = Post
+        fields = [
+            'title',
+            'slug',
+            'content',
+            'publish',
+        ]
+
+
+
 
 """ [test]not valid
 data = {
