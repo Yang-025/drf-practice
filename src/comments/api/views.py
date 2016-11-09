@@ -17,6 +17,18 @@ from rest_framework.generics import (
 )
 
 
+
+from rest_framework.permissions import (
+    AllowAny,
+    IsAuthenticated,
+    IsAdminUser,
+    IsAuthenticatedOrReadOnly
+)
+
+from posts.api.permissions import IsOwnerOrReadOnly
+from posts.api.pagination import PostLimitOffsetPagination, PostPageNumberPagination
+
+
 from rest_framework.permissions import (
     AllowAny,
     IsAuthenticated,
@@ -63,7 +75,7 @@ class CommentCreateAPIView(CreateAPIView):
 class CommentDetailAPIView(DestroyModelMixin, UpdateModelMixin, RetrieveAPIView):
     queryset = Comment.objects.filter(id__gte=0)
     serializer_class = CommentDetailSerializer
-    
+    permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
 
     def put(self, request, *args, **kwargs):
         # update() 是 UpdateModelMixin 提供的方法
