@@ -4,6 +4,7 @@ from rest_framework.serializers import (
     SerializerMethodField,
 )
 
+from accounts.api.serializers import UserDetailSerializer
 from comments.api.serializers import CommentSerializer
 from comments.models import Comment
 
@@ -30,6 +31,9 @@ post_detail_url = HyperlinkedIdentityField(
 class PostDetailSerializer(ModelSerializer):
     url = post_detail_url
     comments = SerializerMethodField()
+    user = UserDetailSerializer(read_only=True)
+    image = SerializerMethodField()
+    html = SerializerMethodField()
 
     class Meta:
         model = Post
@@ -41,6 +45,9 @@ class PostDetailSerializer(ModelSerializer):
             'content',
             'publish',
             'comments',
+            'image',
+            'html',
+            'user',
         ]
 
     def get_comments(self, obj):
@@ -49,6 +56,16 @@ class PostDetailSerializer(ModelSerializer):
         c_qs = Comment.objects.filter_by_instance(obj)
         comments = CommentSerializer(c_qs, many=True).data
         return comments
+
+    def get_html(self, obj):
+        return obj.get_markdown()
+
+    def get_image(self, obj):
+        try:
+            image = obj.image.url
+        except:
+            image = None
+        return image
 
 class PostListSerializer(ModelSerializer):
     # view_name 來自於blog/urls.py 的 namespace='posts-api'
@@ -62,9 +79,10 @@ class PostListSerializer(ModelSerializer):
     #     lookup_field='slug'
     # )
     url = post_detail_url
-    user = SerializerMethodField()
-    image = SerializerMethodField()
-    html = SerializerMethodField()
+    # user = SerializerMethodField()
+    user = UserDetailSerializer(read_only=True)
+    # image = SerializerMethodField()
+    # html = SerializerMethodField()
 
     class Meta:
         model = Post
@@ -74,23 +92,23 @@ class PostListSerializer(ModelSerializer):
             'title',
             'content',
             'publish',
-            'image',
-            'html',
+            # 'image',
+            # 'html',
             # 'delete_url',
         ]
 
-    def get_html(self, obj):
-        return obj.get_markdown()
+    # def get_html(self, obj):
+    #     return obj.get_markdown()
 
-    def get_user(self, obj):
-        return str(obj.user.username)
-
-    def get_image(self, obj):
-        try:
-            image = obj.image.url
-        except:
-            image = None
-        return image
+    # def get_user(self, obj):
+    #     return str(obj.user.username)
+    #
+    # def get_image(self, obj):
+    #     try:
+    #         image = obj.image.url
+    #     except:
+    #         image = None
+    #     return image
 
 
 

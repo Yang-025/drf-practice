@@ -5,6 +5,8 @@ from rest_framework.serializers import (
     ValidationError
 )
 
+from accounts.api.serializers import UserDetailSerializer
+
 from comments.models import Comment
 
 from django.contrib.contenttypes.models import ContentType
@@ -120,16 +122,21 @@ class CommentListSerializer(ModelSerializer):
 
 
 class CommentChildSerializer(ModelSerializer):
+    # 利用Serializer組資料
+    user = UserDetailSerializer(read_only=True)
     class Meta:
         model = Comment
         fields = [
             'id',
+            'user',
             'content',
             'timestamp'
         ]
 
 
 class CommentDetailSerializer(ModelSerializer):
+    # 利用Serializer組資料
+    user = UserDetailSerializer(read_only=True)
     replies = SerializerMethodField()
     content_object_url = SerializerMethodField()
     reply_count = SerializerMethodField()
@@ -137,6 +144,7 @@ class CommentDetailSerializer(ModelSerializer):
         model = Comment
         fields = [
             'id',
+            'user',
             # 'content_type',
             # 'object_id',
             'content',
