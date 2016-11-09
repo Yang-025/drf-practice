@@ -30,7 +30,6 @@ from posts.api.permissions import IsOwnerOrReadOnly
 
 from .serializers import (
     CommentSerializer,
-    CommentEditSerializer,
     CommentDetailSerializer,
     create_comment_serializer,
 )
@@ -55,15 +54,16 @@ class CommentCreateAPIView(CreateAPIView):
         )
 
 
-class CommentDetailAPIView(RetrieveAPIView):
-    queryset = Comment.objects.all()
-    serializer_class = CommentDetailSerializer
-    lookup_field = 'pk'
+# class CommentEditAPIView(RetrieveAPIView):
+#     queryset = Comment.objects.all()
+#     serializer_class = CommentDetailSerializer
+#     lookup_field = 'pk'
 
 
-class CommentEditAPIView(DestroyModelMixin, UpdateModelMixin, RetrieveAPIView):
+class CommentDetailAPIView(DestroyModelMixin, UpdateModelMixin, RetrieveAPIView):
     queryset = Comment.objects.filter(id__gte=0)
-    serializer_class = CommentEditSerializer
+    serializer_class = CommentDetailSerializer
+    
 
     def put(self, request, *args, **kwargs):
         # update() 是 UpdateModelMixin 提供的方法
