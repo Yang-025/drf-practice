@@ -94,10 +94,16 @@ class CommentSerializer(ModelSerializer):
 
 
 class CommentListSerializer(ModelSerializer):
+    # 根據blog/urls.py 的namespace 和 comments/api/urls.py 的name 組成
+    url = HyperlinkedIdentityField(
+        view_name='comments-api:thread',
+    )
     reply_count = SerializerMethodField()
+
     class Meta:
         model = Comment
         fields = [
+            'url',
             'id',
             # 'content_type',
             # 'object_id',
@@ -125,25 +131,33 @@ class CommentChildSerializer(ModelSerializer):
 
 class CommentDetailSerializer(ModelSerializer):
     replies = SerializerMethodField()
+    content_object_url = SerializerMethodField()
     reply_count = SerializerMethodField()
     class Meta:
         model = Comment
         fields = [
             'id',
-            'content_type',
-            'object_id',
+            # 'content_type',
+            # 'object_id',
             'content',
             'replies',
             'timestamp',
             'reply_count',
+            'content_object_url',
         ]
 
         read_only_fields =[
-            'content_type',
-            'object_id',
+            # 'content_type',
+            # 'object_id',
             'reply_count',
             'replies',
         ]
+
+    def get_content_object_url(self, obj):
+        try:
+            return obj.content_object.get_api_url()
+        except:
+            return None
 
     def get_replies(self, obj):
         if obj.is_parent:
