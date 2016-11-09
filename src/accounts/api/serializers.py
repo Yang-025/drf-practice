@@ -1,7 +1,9 @@
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth import get_user_model
 
+
 from rest_framework.serializers import (
+    EmailField,
     HyperlinkedIdentityField,
     ModelSerializer,
     SerializerMethodField,
@@ -11,18 +13,53 @@ from rest_framework.serializers import (
 
 User = get_user_model()
 
+
 class UserCreateSerializer(ModelSerializer):
+    email = EmailField(label='Email Address')
+    email2 = EmailField(label='Confirm Email')
     class Meta:
         model = User
         fields = [
             'username',
             'password',
             'email',
+            'email2',
         ]
 
         extra_kwargs = {"password":
                             {"write_only": True}
                         }
+
+    def validate(self, data):
+        email = data['email']
+        user_qs = User.objects.filter(email=email)
+        if user_qs.exists():
+            raise ValidationError("This user has already registered.")
+        return data
+
+    def validate_email(self, value):
+        """
+        :param value: 只會帶此欄位的資料
+        :return:
+        """
+        data = self.get_initial()
+        email1 = data.get("email2")
+        email2 = value
+        if email1 != email2:
+            raise ValidationError("Email must match.")
+        # 也可以寫在裡面
+        user_qs = User.objects.filter(email=email2)
+        if user_qs.exists():
+            raise ValidationError("This user has already registered.")
+        return value
+
+    def validate_email2(self, value):
+        data = self.get_initial()
+        email1 = data.get("email")
+        email2 = value
+        if email1 != email2:
+            raise ValidationError("Email must match.")
+        return value
 
     def create(self, validated_data):
         print(validated_data)
