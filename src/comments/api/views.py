@@ -92,7 +92,7 @@ class CommentListAPIView(ListAPIView):
     filter_backends = [SearchFilter, OrderingFilter]
     search_fields = ['content', 'user__first_name']
     pagination_class = PostPageNumberPagination
-    permission_classes = [AllowAny]
+    # permission_classes = [AllowAny]  # 測試JWT先註解起來
 
     def get_queryset(self, *args, **kwargs):
         # queryset_list = super(CommentListAPIView, self).get_queryset(*args,**kwargs)
